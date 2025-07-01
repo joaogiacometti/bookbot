@@ -1,11 +1,20 @@
+import argparse
 import sys
 
-from stats import count_words, get_character_count, get_most_common_characters
+from stats import count_words, get_most_common_characters
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="Analyze a text file.")
+    parser.add_argument("file_path", help="Path to the text file")
+    parser.add_argument("n", nargs="?", default=10, type=int,
+                        help="Number of top characters to display (default: 10)")
+    return parser.parse_args()
 
 
 def get_file_content(file_path):
     try:
-        with open(file_path, 'r') as file:
+        with open(file_path, 'r', encoding='utf-8') as file:
             return file.read()
     except FileNotFoundError:
         print(f"Error: The file '{file_path}' does not exist.")
@@ -13,12 +22,9 @@ def get_file_content(file_path):
 
 
 def main():
-    if len(sys.argv) < 2:
-        print("Usage: python main.py <file_path> [n]")
-        sys.exit(1)
-
-    file_path = sys.argv[1]
-    n = int(sys.argv[2]) if len(sys.argv) > 2 else 10
+    args = parse_args()
+    file_path = args.file_path
+    n = args.n
 
     content = get_file_content(file_path)
     words = count_words(content)
